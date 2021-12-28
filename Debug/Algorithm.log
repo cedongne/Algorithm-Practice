@@ -1,4 +1,0 @@
-﻿  KMP.cpp
-C:\Users\cedon\Documents\GitHub\Algorithm\KMP.cpp(54,28): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\cedon\Documents\GitHub\Algorithm\KMP.cpp(63,28): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-  Algorithm.vcxproj -> C:\Users\cedon\Documents\GitHub\Algorithm\Debug\Algorithm.exe
