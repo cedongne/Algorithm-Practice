@@ -47,7 +47,7 @@ vector<int> KMP(string parent, string pattern) {
 
 void PrintPatternIndex(vector<int> found_index) {
 	for (int count = 0; count < found_index.size(); count++) {
-		printf("%d 위치에 문자열이 존재합니다.\n", found_index[count]);
+		printf("%d Found.\n", found_index[count]);
 	}
 }
 
