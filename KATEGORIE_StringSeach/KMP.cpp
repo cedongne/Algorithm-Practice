@@ -52,17 +52,8 @@ void PrintPatternIndex(vector<int> found_index) {
 }
 
 int main() {
-	string parent = "ababacabacaabacaaba";
-	string pattern = "abacaaba";
+	string parent = "asdfasdfddasdfasdfasdf";
+	string pattern = "asdfasdf";
 	vector<int> found_indexes = KMP(parent, pattern);
-
 	PrintPatternIndex(found_indexes);
-	found_indexes.clear();
-
-	parent = "AAAAAAAAAB";
-	pattern = "AAB";
-	found_indexes = KMP(parent, pattern);
-
-	PrintPatternIndex(found_indexes);
-	found_indexes.clear();
 }
