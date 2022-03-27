@@ -70,7 +70,6 @@ int main(){
 //                dfs(col, row);
                 q.push({col, row});
                 bfs(q.front().first, q.front().second);
-                printf("bfs completed\n");
                 estates.push_back(houseCnt);
                 houseCnt = 0;
             }
