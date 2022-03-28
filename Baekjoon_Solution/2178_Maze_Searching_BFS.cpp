@@ -10,15 +10,12 @@ int colSize, rowSize;
 int maze[100][100];
 int visit[100][100] = {0, };
 std::queue<std::pair<int ,int>> q;
-std::stack<std::pair<int, int>> route;
-std::stack<std::pair<int, int>> cross;
 
 int wayCnt = 0;
 
 void bfs(std::pair<int, int> startPoint){
     while(!q.empty()){
         std::pair<int, int> cur = q.front();
-        route.push(cur);
         q.pop();
         
         if(cur == goal){
@@ -37,33 +34,8 @@ void bfs(std::pair<int, int> startPoint){
             if(maze[nextY][nextX] && !visit[nextY][nextX]){
                 wayCnt++;
                 q.push({nextY, nextX});
-                visit[nextY][nextX] = 1;
+                visit[nextY][nextX] = visit[cur.first][cur.second] + 1;
             }
-        }
-        printf("cur : %d %d, wayCnt : %d\n", cur.second, cur.first, wayCnt);
-        if(wayCnt >= 2){
-            cross.push(cur);
-        }
-        else if(wayCnt == 0){
-            printf("route : %d %d, cross : %d %d\n", route.top().second, route.top().first, cross.top().second, cross.top().first);
-            while(route.top() != cross.top()){
-                route.pop();
-            }
-        }
-    }
-}
-
-void dfs(int curY, int curX){
-    for(auto dir : direction){
-        int nextY = curY + dir.first;
-        int nextX = curX + dir.second;
-
-        if(nextX < 0 || nextX >= rowSize || nextY < 0 || nextY >= colSize){
-            continue;
-        }
-        if(maze[nextY][nextX] && !visit[nextY][nextX]){
-            dfs(nextY, nextX);
-            visit[nextY][nextX] = 1;
         }
     }
 }
@@ -85,5 +57,5 @@ int main(){
     visit[0][0] = 1;
     bfs({0, 0});
 
-    printf("%d\n", route.size());
+    printf("%d\n", visit[colSize - 1][rowSize - 1]);
 }
