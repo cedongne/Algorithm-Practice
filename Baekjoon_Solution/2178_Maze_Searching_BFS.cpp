@@ -53,6 +53,21 @@ void bfs(std::pair<int, int> startPoint){
     }
 }
 
+void dfs(int curY, int curX){
+    for(auto dir : direction){
+        int nextY = curY + dir.first;
+        int nextX = curX + dir.second;
+
+        if(nextX < 0 || nextX >= rowSize || nextY < 0 || nextY >= colSize){
+            continue;
+        }
+        if(maze[nextY][nextX] && !visit[nextY][nextX]){
+            dfs(nextY, nextX);
+            visit[nextY][nextX] = 1;
+        }
+    }
+}
+
 int main(){
     scanf("%d %d", &colSize, &rowSize);
     goal = {colSize - 1, rowSize - 1};
