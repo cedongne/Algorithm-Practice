@@ -60,12 +60,10 @@ int main(){
     for(int high = 0; high < height; high++){
         for(int col = 0; col < colSize; col++){
             for(int row = 0; row < rowSize; row++){
-                printf("%d ", box[high][col][row]); // debug
-                if(box[col][row] == 0){
+                if(box[high][col][row] == 0){
                     maxDays = -1;
                 }
             }
-            printf("\n"); // debug
         }
     }
     printf("%d\n", maxDays);
