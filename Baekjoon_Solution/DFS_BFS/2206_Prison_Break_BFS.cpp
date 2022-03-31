@@ -2,44 +2,49 @@
 #include <queue>
 #include <vector>
 
+struct state{
+    int x;
+    int y;
+    int breaking;
+};
+
 std::pair<int, int> direction[4] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-std::queue<std::pair<int, int>> q;
-std::vector<std::pair<int, int>> walls;
-std::vector<std::pair<int, int>> visit;
+
 int rowSize, colSize;
 int map[1000][1000];
-int distance[1000][1000];
 
-int minDistance = 1000000;
+int visit[1000][1000][2];
+std::queue<state> q;
 
-void bfs(){
+int bfs(){
     while(!q.empty()){
-        std::pair<int, int> cur = q.front();
+        state cur = q.front();
         q.pop();
+        if(cur.x == colSize - 1 && cur.y == rowSize - 1){
+            return visit[cur.y][cur.x][cur.breaking];
+        }
 
         for(auto dir : direction){
-            int nextX = cur.second + dir.second;
-            int nextY = cur.first + dir.first;
+            int nextX = cur.x + dir.second;
+            int nextY = cur.y + dir.first;
 
             if(nextX < 0 || nextX >= colSize || nextY < 0 || nextY >= rowSize){
                 continue;
             }
-            if(distance[nextY][nextX] == 0){
-                if(map[nextY][nextX] == 1)
-                q.push({nextY, nextX});
-                distance[nextY][nextX] = distance[cur.first][cur.second] + 1;
-                visit.push_back({nextY, nextX});
+            if(map[nextY][nextX] == 1 && !cur.breaking){
+                q.push({nextX, nextY, 1});
+                visit[nextY][nextX][1] = visit[cur.y][cur.x][cur.breaking] + 1;
+            }
+            else if(map[nextY][nextX] == 0 && !visit[nextY][nextX][cur.breaking]){
+                q.push({nextX, nextY, cur.breaking});
+                visit[nextY][nextX][cur.breaking] = visit[cur.y][cur.x][cur.breaking] + 1;
             }
         }
     }
+
+    return -1;
 }
 
-void reset(){
-    for(auto visited : visit){
-        distance[visited.first][visited.second] = 0;
-    }
-    visit.clear();
-}
 
 int main(){
     scanf("%d %d", &rowSize, &colSize);
@@ -49,30 +54,27 @@ int main(){
 
         for(int index = 0; index < colSize; index++){
             map[row][index] = line[index] - '0';
-            if(line[index] == '1'){
-                walls.push_back({row, index});
-            }
         }
     }
 
-    for(auto wall : walls){
-        map[wall.first][wall.second] = 0;
-        q.push({0, 0});
-        distance[0][0] = 1;
+    q.push({0, 0, 0});
+    visit[0][0][0] = 1;
 
-        bfs();
+    printf("%d", bfs());
 
-        map[wall.first][wall.second] = 1;
-
-        if(distance[rowSize - 1][colSize - 1] > 0 && distance[rowSize - 1][colSize - 1] < minDistance){
-            minDistance = distance[rowSize - 1][colSize - 1];
+    printf("\n");
+    for(int row = 0; row < rowSize; row++){
+        for(int col = 0; col < colSize; col++){
+            printf("%d", visit[row][col][0]);
         }
-
-        reset();
+        printf("\n");
+    }
+    printf("\n");
+    for(int row = 0; row < rowSize; row++){
+        for(int col = 0; col < colSize; col++){
+            printf("%d", visit[row][col][1]);
+        }
+        printf("\n");
     }
 
-    if(minDistance == 1000000){
-        minDistance = -1;
-    }
-    printf("%d\n", minDistance);
 }
