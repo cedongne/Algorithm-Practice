@@ -61,20 +61,4 @@ int main(){
     visit[0][0][0] = 1;
 
     printf("%d", bfs());
-
-    printf("\n");
-    for(int row = 0; row < rowSize; row++){
-        for(int col = 0; col < colSize; col++){
-            printf("%d", visit[row][col][0]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-    for(int row = 0; row < rowSize; row++){
-        for(int col = 0; col < colSize; col++){
-            printf("%d", visit[row][col][1]);
-        }
-        printf("\n");
-    }
-
 }
