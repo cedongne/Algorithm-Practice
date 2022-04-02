@@ -12,7 +12,6 @@ bool bfs(){
     while(!q.empty()){
         int cur = q.front();
         q.pop();
-       printf("cur[%d] : %d\t", cur, group[cur]);
         for(auto adj : graph[cur]){
             if(!visit[adj]){
                 q.push(adj);
@@ -22,9 +21,7 @@ bool bfs(){
             else if(group[cur] == group[adj]){
                 return false;
             }
-            printf("adj[%d] : %d\t", adj, group[adj]);
         }
-       printf("\n");
     }
     return true;
 }
@@ -54,7 +51,7 @@ int main(){
         }
 
         bool bipartite = true;
-        for(int index = 1; index <= v; index++){
+        for(int index = 1; index <= v; index++){    // 불완전 그래프를 위한 모든 정점 탐색
             if(!visit[index]){
                 q.push(index);
                 visit[index] = 1;
