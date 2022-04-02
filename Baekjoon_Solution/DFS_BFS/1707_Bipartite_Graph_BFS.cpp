@@ -12,6 +12,7 @@ bool bfs(){
     while(!q.empty()){
         int cur = q.front();
         q.pop();
+       printf("cur[%d] : %d\t", cur, group[cur]);
         for(auto adj : graph[cur]){
             if(!visit[adj]){
                 q.push(adj);
@@ -21,7 +22,9 @@ bool bfs(){
             else if(group[cur] == group[adj]){
                 return false;
             }
+            printf("adj[%d] : %d\t", adj, group[adj]);
         }
+       printf("\n");
     }
     return true;
 }
@@ -35,7 +38,6 @@ void reset(){
     while(!q.empty()){
         q.pop();
     }
-    
 }
 
 int main(){
@@ -51,16 +53,19 @@ int main(){
             graph[vert2].push_back(vert1);
         }
 
+        bool bipartite = true;
         for(int index = 1; index <= v; index++){
-            if(!graph[index].empty()){
+            if(!visit[index]){
                 q.push(index);
                 visit[index] = 1;
                 group[index] = 1;
+            }
+            if(!bfs()){
+                bipartite = false;
                 break;
             }
         }
-
-        (bfs()) ? printf("YES\n") : printf("NO\n");
+        (bipartite) ? printf("YES\n") : printf("NO\n");
         reset();
     }
 }
