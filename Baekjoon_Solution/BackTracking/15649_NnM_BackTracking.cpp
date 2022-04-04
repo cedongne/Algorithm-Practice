@@ -25,7 +25,7 @@ int main(){
 	std::cin.tie(0);
 	std::cout.tie(0);
 	std::cin >> n >> m;
-    for(int index = 0; index <= m * 2; index++){
+    for(int index = 0; index < m * 2; index++){
         nums[index] = ' ';
     }
 
