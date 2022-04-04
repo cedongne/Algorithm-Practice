@@ -38,14 +38,16 @@ void reset(){
 }
 
 int main(){
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
     int cases;
-    scanf("%d", &cases);
+    std::cin >> cases;
 
     for(int count = 0; count < cases; count++){
-        scanf("%d %d", &v, &e);
+        std::cin >> v >> e;
         int vert1, vert2;
         for(int edgeCount = 0; edgeCount < e; edgeCount++){
-            scanf("%d %d", &vert1, &vert2);
+            std::cin >> vert1 >> vert2;
             graph[vert1].push_back(vert2);
             graph[vert2].push_back(vert1);
         }
