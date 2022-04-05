@@ -2,35 +2,59 @@
 #include <vector>
 #define MAX_SIZE 9
 
-struct coordinate{
+struct holeCoor{
     int x;
     int y;
     int squareNum;
 };
 
+int sudoku[MAX_SIZE + 1][MAX_SIZE + 1];
+
 bool row[MAX_SIZE + 1][MAX_SIZE + 1];
 bool col[MAX_SIZE + 1][MAX_SIZE + 1];
 bool square[MAX_SIZE + 1][MAX_SIZE + 1];
 
-std::vector<coordinate> coor;
+int holeNum = 0;
+holeCoor hole[81];
 
-int holeNum;
-void back_tracking(int holeCnt){
-    coordinate cur = coor[holeCnt];
-    for(int count = 1; count <= MAX_SIZE; count++){
-        if(!row[cur.y][count] && !col[cur.x][count] && !square[cur.squareNum][count]){
-            row[cur.y][count] = true;
-            col[cur.x][count] = true;
-            square[cur.squareNum][count] = true;
+int get_block_number(int x, int y){
+    return ((x - 1)/ 3) + (((y - 1)/ 3) * 3) + 1;
+}
 
-            back_tracking(holeCnt + 1);
-            
-            row[cur.y][count] = false;
-            col[cur.x][count] = false;
-            square[cur.squareNum][count] = false;
+bool back_tracking(int index){
+    if(index == holeNum){
+        for(int y = 1; y <= MAX_SIZE; y++){
+            for(int x = 1; x <= MAX_SIZE; x++){
+                std::cout << sudoku[y][x] << " ";
+            }
+            std::cout << "\n";
+        }
+        return true;
+    }
+    else{
+        for(int num = 1; num <= MAX_SIZE; num++){
+            int x = hole[index].x;
+            int y = hole[index].y;
+            int squareNum = hole[index].squareNum;
+
+            if(!row[y][num] && !col[x][num] && !square[squareNum][num]){
+                sudoku[y][x] = num;
+                row[y][num] = true;
+                col[x][num] = true;
+                square[squareNum][num] = true;
+
+                if(back_tracking(index + 1)){
+                    return true;
+                }
+
+                sudoku[y][x] = 0;
+                row[y][num] = false;
+                col[x][num] = false;
+                square[squareNum][num] = false;
+            }
         }
     }
-
+    return false;
 }
 
 int main(){
@@ -38,20 +62,19 @@ int main(){
     std::cin.tie(NULL);
     std::cout.tie(NULL);
 
-    int num;
-    for(int count1 = 1; count1 < MAX_SIZE + 1; count1++){
-        for(int count2 = 1; count2 < MAX_SIZE + 1; count2++){
-            std::cin >> num;
-            row[count1][num] = true;
-            col[count2][num] = true;
-            int squareNum = (count2 / 3) + ((count1 / 3) * 3);
-            square[squareNum][num] = true;
-            if(num == 0){
-                coor.push_back({count2, count1, squareNum});
+    for(int y = 1; y <= MAX_SIZE; y++){
+        for(int x = 1; x <= MAX_SIZE; x++){
+            std::cin >> sudoku[y][x];
+            int blockNum = get_block_number(x, y);
+
+            row[y][sudoku[y][x]] = true;
+            col[x][sudoku[y][x]] = true;
+            square[blockNum][sudoku[y][x]] = true;
+            if(sudoku[y][x] == 0){
+                hole[holeNum++] = {x, y, blockNum};
             }
         }
     }
-
-    holeNum = coor.size();
+    printf("\n");
     back_tracking(0);
 }
