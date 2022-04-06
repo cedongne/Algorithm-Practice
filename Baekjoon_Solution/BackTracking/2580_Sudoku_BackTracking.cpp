@@ -17,7 +17,7 @@ bool square[MAX_SIZE + 1][MAX_SIZE + 1];
 int holeNum = 0;
 holeCoor hole[81];
 
-int get_block_number(int x, int y){
+int get_square_number(int x, int y){
     return ((x - 1)/ 3) + (((y - 1)/ 3) * 3) + 1;
 }
 
@@ -65,13 +65,13 @@ int main(){
     for(int y = 1; y <= MAX_SIZE; y++){
         for(int x = 1; x <= MAX_SIZE; x++){
             std::cin >> sudoku[y][x];
-            int blockNum = get_block_number(x, y);
+            int squareNum = get_square_number(x, y);
 
             row[y][sudoku[y][x]] = true;
             col[x][sudoku[y][x]] = true;
-            square[blockNum][sudoku[y][x]] = true;
+            square[squareNum][sudoku[y][x]] = true;
             if(sudoku[y][x] == 0){
-                hole[holeNum++] = {x, y, blockNum};
+                hole[holeNum++] = {x, y, squareNum};
             }
         }
     }
