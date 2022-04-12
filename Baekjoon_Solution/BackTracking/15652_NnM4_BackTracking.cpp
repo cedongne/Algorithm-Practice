@@ -1,6 +1,6 @@
 #include <iostream>
 
-char nums[20];
+char nums[16];
 short n, m;
 
 void permutation(int count){
