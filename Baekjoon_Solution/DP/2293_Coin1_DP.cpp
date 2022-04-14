@@ -1,26 +1,23 @@
-#include <iostream>
-#include <algorithm>
+#include <cstdio>
+using namespace std;
 
-int coins[100];
-long long cases[10001] = {0, };
+int main() {
 
-int main(){
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(NULL);
-    std::cout.tie(NULL);
+    int i, j, n, k;
+    int dp[10001] = {0, };
 
+    scanf("%d %d", &n, &k);
 
-    int n, k;
-    std::cin >> n >> k;
+    int coins[n];
 
-    for(int count = 0; count < n; count++){
-        std::cin >> coins[count];
-    }
-    std::sort(coins + n, coins);
+    for (i = 0; i < n; i++) scanf("%d", &coins[i]);
+    
+    dp[0] = 1;
+    for (i = 0; i < n; i++) 
+        for (j = coins[i]; j <= k; j++) 
+            if (j - coins[i] >= 0) 
+                dp[j] += dp[j - coins[i]];
 
-    for(int coin = 0; coin < n; coin++){
-        for(int value = 0; value <= k - coins[coin]; value++){
-            cases[value]
-        }
-    }
+    printf("%d\n", dp[k]);
+    return 0;
 }
