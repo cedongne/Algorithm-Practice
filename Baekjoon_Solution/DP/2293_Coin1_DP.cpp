@@ -1,23 +1,26 @@
-#include <cstdio>
-using namespace std;
+#include <iostream>
+
+int dp[10001] = { 0, };
+int coins[101];
+
+int n, k;
 
 int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(NULL);
+    std::cout.tie(NULL);
 
-    int i, j, n, k;
-    int dp[10001] = {0, };
+    std::cin >> n >> k;
 
-    scanf("%d %d", &n, &k);
-
-    int coins[n];
-
-    for (i = 0; i < n; i++) scanf("%d", &coins[i]);
-    
     dp[0] = 1;
-    for (i = 0; i < n; i++) 
-        for (j = coins[i]; j <= k; j++) 
-            if (j - coins[i] >= 0) 
-                dp[j] += dp[j - coins[i]];
 
-    printf("%d\n", dp[k]);
-    return 0;
+    for (int coinIdx = 1; coinIdx <= n; coinIdx++) {
+        std::cin >> coins[coinIdx];
+
+        for (int dpCnt = coins[coinIdx]; dpCnt <= k; dpCnt++) {
+            dp[dpCnt] += dp[dpCnt - coins[coinIdx]];
+        }
+    }
+
+    std::cout << dp[k];
 }
