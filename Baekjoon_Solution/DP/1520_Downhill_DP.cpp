@@ -1,65 +1,48 @@
 #include <iostream>
-#include <queue>
+#include <vector>
 #define MAX 1000000000
 
 int rowSize, colSize;
 int map[502][502];
-int visit[502][502] = { 0, };
+int visit[502][502];
 
-std::queue<std::pair<int, int>> q;
 
-int route = 0;
-
-void bfs() {
-	while (!q.empty()) {
-		std::pair<int, int> cur = q.front();
-		q.pop();
-        int nextRow = cur.first + 1;
-        int nextCol = cur.second;
-		if (map[nextRow][nextCol] < map[cur.first][cur.second]) {
-			q.push({ nextRow, nextCol });
-			visit[nextRow][nextCol]++;
-		}
-        nextRow = cur.first - 1;
-        nextCol = cur.second;
-		if (map[nextRow][nextCol] < map[cur.first][cur.second]) {
-			q.push({ nextRow, nextCol });
-			visit[nextRow][nextCol]++;
-		}
-        nextRow = cur.first;
-        nextCol = cur.second + 1;
-		if (map[nextRow][nextCol] < map[cur.first][cur.second]) {
-			q.push({ nextRow, nextCol });
-			visit[nextRow][nextCol]++;
-		}
-        nextRow = cur.first;
-        nextCol = cur.second - 1;
-		if (map[nextRow][nextCol] < map[cur.first][cur.second]) {
-			q.push({ nextRow, nextCol });
-			visit[nextRow][nextCol]++;
-		}
+int dfs(int row, int col) {
+	if (visit[row][col] == -1) {
+		return 0;
+	}
+	if (visit[row][col] > 0) {
+		return visit[row][col];
 	}
 
-	std::cout << visit[rowSize][colSize];
-}
-
-void dfs(int row, int col) {
-	if (row == rowSize&& col == colSize) {
-		route++;
-		return;
+	if (row == rowSize && col == colSize) {
+		return 1;
 	}
 
-	if (map[row + 1][col] < map[row][col]) {
-		dfs(row + 1, col);
+	visit[row][col] = 0;
+
+	int nextRow = row + 1;
+	if (map[nextRow][col] && map[nextRow][col] < map[row][col]) {
+		visit[row][col] += dfs(nextRow, col);
 	}
-	if (map[row - 1][col] < map[row][col]) {
-		dfs(row - 1, col);
+	nextRow = row - 1;
+	if (map[nextRow][col] && map[nextRow][col] < map[row][col]) {
+		visit[row][col] += dfs(nextRow, col);
 	}
-	if (map[row][col + 1] < map[row][col]) {
-		dfs(row, col + 1);
+	int nextCol = col + 1;
+	if (map[row][nextCol] && map[row][nextCol] < map[row][col]) {
+		visit[row][col] += dfs(row, nextCol);
 	}
-	if (map[row][col - 1] < map[row][col]) {
-		dfs(row, col - 1);
+	nextCol = col - 1;
+	if (map[row][nextCol] && map[row][nextCol] < map[row][col]) {
+		visit[row][col] += dfs(row, nextCol);
+	}
+	if (visit[row][col] == 0) {
+		visit[row][col] = -1;
+		return 0;
+	}
+	else {
+		return visit[row][col];
 	}
 }
 
@@ -70,20 +53,11 @@ int main() {
 
 	std::cin >> rowSize >> colSize;
 
-	for (int row = 0; row <= rowSize + 1; row++) {
-		for (int col = 0; col <= colSize + 1; col++) {
-			map[row][col] = MAX;
-		}
-	}
-
 	for (int row = 1; row <= rowSize; row++) {
 		for (int col = 1; col <= colSize; col++) {
 			std::cin >> map[row][col];
 		}
 	}
 
-//	q.push({ 1, 1 });
-//	bfs();
-	dfs(1, 1);
-	std::cout << route;
+	std::cout << dfs(1, 1);
 }
