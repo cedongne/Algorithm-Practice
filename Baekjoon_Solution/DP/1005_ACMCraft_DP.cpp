@@ -14,9 +14,7 @@ int spendingTime[1001];
 
 void init() {
     for (int index = 0; index <= n; index++) {
-        buildings[index] = 0;
         inDegree[index] = 0;
-        spendingTime[index] = 0;
         graph[index].clear();
     }
     while (!q.empty()) {
@@ -30,7 +28,7 @@ void trace_prev() {
             q.push(count);
         }
     }
-    int additionalTime = 0;
+
     while (!q.empty()) {
         int cur = q.front();
         q.pop();
