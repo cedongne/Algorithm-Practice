@@ -6,7 +6,6 @@
 
 std::vector<std::pair<int, int>> graph[MAX_SIZE];
 int dist[MAX_SIZE];
-bool visit[MAX_SIZE];
 
 std::priority_queue<std::pair<int, int>> pq;
 
@@ -20,7 +19,6 @@ void dijkstra(int startNode) {
 		pq.push({ -adj.first, adj.second });
 	}
 
-	visit[startNode] = true;
 	dist[startNode] = 0;
 
 	while (!pq.empty()) {
@@ -28,11 +26,9 @@ void dijkstra(int startNode) {
 		int nodeNum = pq.top().second;
 		pq.pop();
 
-		if (visit[nodeNum] || distance > dist[nodeNum]) {
+		if (distance > dist[nodeNum]) {
 			continue;
 		}
-
-		visit[nodeNum] = true;
 
 		for (auto adj : graph[nodeNum]) {
 			if (adj.first + distance < dist[adj.second]) {
@@ -46,7 +42,6 @@ void dijkstra(int startNode) {
 void init() {
 	for (int count = 1; count <= v; count++) {
 		dist[count] = INF;
-		visit[count] = false;
 	}
 }
 
