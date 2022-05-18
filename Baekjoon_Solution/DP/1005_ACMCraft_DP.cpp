@@ -1,33 +1,50 @@
 #include <iostream>
 #include <vector>
+#include <queue>
 #define MAX(a, b) ((a > b) ? a : b)
 
 int t, n, k;
 int buildings[1001];
+int inDegree[1001];
 std::vector<int> graph[1001];
-std::vector<int> prev[1001];
+std::queue<int> q;
 
 int targetBuilding;
 int spendingTime[1001];
 
 void init() {
     for (int index = 0; index <= n; index++) {
-        buildings[index] = 0;
+        inDegree[index] = 0;
         graph[index].clear();
-        prev[index].clear();
+    }
+    while (!q.empty()) {
+        q.pop();
     }
 }
 
-void trace_prev(int buildingNumber) {
-    int additionalTime = 0;
-    for (auto previousBuilding : prev[buildingNumber]) {
-        if (spendingTime[previousBuilding] == buildings[previousBuilding]) {
-            trace_prev(previousBuilding);
+void trace_prev() {
+    for (int count = 1; count <= n; count++) {
+        if (inDegree[count] == 0) {
+            q.push(count);
         }
-        int temp = spendingTime[previousBuilding];
-        additionalTime = MAX(temp, additionalTime);
     }
-    spendingTime[buildingNumber] += additionalTime;
+    
+    while (!q.empty()) {
+        int cur = q.front();
+        q.pop();
+        
+        if (cur == targetBuilding) {
+            break;
+        }
+        for (auto adj : graph[cur]) {
+            if (spendingTime[adj] < spendingTime[cur] + buildings[adj]) {
+                spendingTime[adj] = spendingTime[cur] + buildings[adj];
+            }
+            if ((--inDegree[adj]) == 0) {
+                q.push(adj);
+            }
+        }
+    }
 }
 
 int main() {
@@ -50,18 +67,13 @@ int main() {
         for (int count = 1; count <= k; count++) {
             std::cin >> firstBuild >> secondBuild;
             graph[firstBuild].push_back(secondBuild);
-            prev[secondBuild].push_back(firstBuild);
+            inDegree[secondBuild]++;
         }
 
         std::cin >> targetBuilding;
-        int max = 0;
-        for (auto previousBuilding : prev[targetBuilding]) {
-            if (spendingTime[previousBuilding] == buildings[previousBuilding]) {
-                trace_prev(previousBuilding);
-            }
-            int result = spendingTime[previousBuilding];
-            max = MAX(result, max);
-        }
-        std::cout << max + buildings[targetBuilding] << std::endl;
+
+        trace_prev();
+
+        std::cout << spendingTime[targetBuilding] << "\n";
     }
 }
