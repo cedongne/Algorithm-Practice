@@ -1,70 +1,63 @@
 #include <iostream>
-#include <queue>
 #include <vector>
+#include <queue>
 #define MAX_SIZE 2001
-#define INF 1000000001
+#define INF 2000000000
 
-struct NodeInfo {
-	int distance;
-	int nodeNum;
-	bool beyond;
+int cases;
 
-	bool operator < (const NodeInfo& info) const {
-		return distance > info.distance;
-	}
-};
-
-int caseNum;
 int n, m, t;
 int s, g, h;
 
 std::vector<std::pair<int, int>> graph[MAX_SIZE];
-std::pair<int, bool> path[MAX_SIZE];
-std::priority_queue<NodeInfo> q;
 
-std::priority_queue<int> possibleDests;
+std::vector<int> endPoints;
 
-std::vector<int> destCandidates;
+std::priority_queue<std::pair<int, int>> q;
+std::priority_queue<int> candidateQ;
 
-bool check_beyond_essential_bridge(int node1, int node2) {
-	return (node1 == g && node2 == h) || (node1 == h && node2 == g);
-}
+int distance[MAX_SIZE];
+int directDistance[MAX_SIZE] = { 0, };
+int wayPoint1Distance[MAX_SIZE] = { 0, };
+int wayPoint2Distance[MAX_SIZE] = { 0, };
 
 void dijkstra(int startNode) {
-	path[startNode] = { 0, 0 };
+	distance[startNode] = 0;
 	for (auto adj : graph[startNode]) {
-		bool beyond = check_beyond_essential_bridge(startNode, adj.second);
-		q.push({ adj.first, adj.second, beyond });
-		if (path[adj.second].first > adj.first) {
-			path[adj.second] = { adj.first, beyond };
+		q.push({ -adj.first, adj.second });
+		if (distance[adj.second] > adj.first) {
+			distance[adj.second] = adj.first;
 		}
 	}
 
 	while (!q.empty()) {
-		int curDistance = q.top().distance;
-		int curNodeNum = q.top().nodeNum;
-		bool beyond = q.top().beyond;
+		int curDistance = -q.top().first;
+		int curNodeNum = q.top().second;
 		q.pop();
 
-		if (path[curNodeNum].first == curDistance) {
+		if (curDistance == distance[curNodeNum]) {
 			for (auto adj : graph[curNodeNum]) {
-				if (path[adj.second].first >= curDistance + adj.first) {
-					bool nextBeyond = beyond || check_beyond_essential_bridge(curNodeNum, adj.second);
-					path[adj.second] = { curDistance + adj.first, nextBeyond || path[adj.second].second};
-					q.push({ path[adj.second].first, adj.second, path[adj.second].second });
+				if (distance[adj.second] > curDistance + adj.first) {
+					distance[adj.second] = curDistance + adj.first;
+
+					q.push({ -distance[adj.second], adj.second });
 				}
 			}
 		}
 	}
 }
 
-void init() {
+void vector_init() {
 	for (int index = 1; index <= n; index++) {
 		graph[index].clear();
-		path[index] = { INF, false };
 	}
-	destCandidates.clear();
-	destCandidates.resize(t);
+	endPoints.clear();
+}
+
+void dist_init() {
+	for (int index = 1; index <= n; index++) {
+		distance[index] = INF;
+	}
 }
 
 int main() {
@@ -72,34 +65,64 @@ int main() {
 	std::cin.tie(NULL);
 	std::cout.tie(NULL);
 
-	std::cin >> caseNum;
-	for (int caseCnt = 0; caseCnt < caseNum; caseCnt++) {
+	std::cin >> cases;
+
+	while (cases--) {
+		vector_init();
 		std::cin >> n >> m >> t;
 		std::cin >> s >> g >> h;
 
-		init();
-
 		int node1, node2, weight;
+		int essentialEdgeWeight = INF;
 		for (int count = 0; count < m; count++) {
 			std::cin >> node1 >> node2 >> weight;
+			if ((node1 == g && node2 == h) || (node1 == h && node2 == g)) {
+				essentialEdgeWeight = weight;
+			}
+
 			graph[node1].push_back({ weight, node2 });
 			graph[node2].push_back({ weight, node1 });
 		}
 
 		for (int count = 0; count < t; count++) {
-			std::cin >> destCandidates[count];
+			int endPoint;
+			std::cin >> endPoint;
+			endPoints.push_back(endPoint);
 		}
 
+		dist_init();
 		dijkstra(s);
 
-		for (auto candidate : destCandidates) {
-			if (path[candidate].second) {
-				possibleDests.push(-candidate);
+		for (auto endPoint : endPoints) {
+			directDistance[endPoint] = distance[endPoint];
+		}
+
+		int wayPoint1Dist = distance[g];
+		int wayPoint2Dist = distance[h];
+
+		dist_init();
+		dijkstra(g);
+
+		for (auto endPoint : endPoints) {
+			wayPoint1Distance[endPoint] = distance[endPoint];
+		}
+
+		dist_init();
+		dijkstra(h);
+
+		for (auto endPoint : endPoints) {
+			wayPoint2Distance[endPoint] = distance[endPoint];
+		}
+
+		for (auto endPoint : endPoints) {
+			if ((directDistance[endPoint] == wayPoint1Dist + essentialEdgeWeight + wayPoint2Distance[endPoint]) || (directDistance[endPoint] == wayPoint2Dist + essentialEdgeWeight + wayPoint1Distance[endPoint])) {
+				candidateQ.push(-endPoint);
 			}
 		}
-		while(!possibleDests.empty()) {
-			std::cout << -possibleDests.top() << " ";
-			possibleDests.pop();
+
+		while (!candidateQ.empty()) {
+			std::cout << -candidateQ.top() << " ";
+			candidateQ.pop();
 		}
 		std::cout << "\n";
 	}
