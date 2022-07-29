@@ -1,22 +1,10 @@
 int solution(vector<int> &A) {
-    int end = 0;
+    long long local_max = -1000000;
+    long long global_max = -1000000;
 
-    long long sum = 0;
-    long long max = -1000000;
-
-    while(end < A.size()){
-        if(A[end] + sum < 0){
-            sum = A[end++];
-            if(max < sum){
-                max = sum;
-            }
-            sum = 0;
-            continue;
-        }
-        sum += A[end++];
-        if(max < sum){
-            max = sum;
-        }
+    for(auto ele : A){
+        local_max = (local_max + ele > ele) ? local_max + ele : ele;
+        global_max = (local_max > global_max) ? local_max : global_max;
     }
-    return max;
+    return global_max;
 }
